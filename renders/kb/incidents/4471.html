@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>#4471 · parser fixed, hint retired · support kb</title>
+<style>
+  :root { --bg:#fbfaf7; --fg:#1d1d1b; --muted:#6b6a66; --line:#e3e0d8; --accent:#2f6f5e; --warn:#b4501f; --warn-bg:#fbeee6; --mono:ui-monospace,'Cascadia Code',Menlo,monospace }
+  * { box-sizing:border-box }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui,sans-serif }
+  main { max-width:760px; margin:0 auto; padding:2rem 16px 4rem }
+  .crumb { font:.8rem var(--mono); color:var(--muted) }
+  h1 { margin:.25rem 0 .5rem; line-height:1.2; font-size:2rem }
+  .meta { display:flex; flex-wrap:wrap; gap:.5rem 1rem; color:var(--muted); font-size:.85rem; margin:0 0 1.5rem }
+  .status { border:1px solid var(--line); border-radius:99px; padding:0 .6rem }
+  h2 { margin:1.6rem 0 .6rem; line-height:1.3 }
+  h3 { margin:1.25rem 0 .4rem; line-height:1.35 }
+  p { margin:.7rem 0 }
+  .callout { border-left:4px solid var(--accent); padding:.5rem 1rem; margin:1rem 0; background:#eef5f2 }
+  table { border-collapse:collapse; width:100%; margin:1rem 0; font-size:.92rem }
+  th,td { border-bottom:1px solid var(--line); padding:.35rem .5rem; text-align:left }
+  code { font: .88em var(--mono) }
+  .muted { color:var(--muted) }
+  .warn td { background:var(--warn-bg) }
+  .warn td:last-child { color:var(--warn); font-weight:600 }
+  a { color:var(--accent) }
+  footer { margin-top:3rem; color:var(--muted); font-size:.8rem; border-top:1px solid var(--line); padding-top:1rem }
+  .stamp { margin:2rem 0 0; font:.85rem var(--mono); color:var(--muted) }
+  svg { width:100%; max-width:640px }
+  svg text { font:8px var(--mono); fill:var(--muted); text-anchor:middle }
+  .received { fill:var(--warn) }
+  .merged { fill:var(--accent) }
+  figcaption { color:var(--muted); font-size:.85rem }
+  .key { display:inline-block; width:.7em; height:.7em; border-radius:2px }
+  .key.received { background:var(--warn) }
+  .key.merged { background:var(--accent) }
+</style>
+</head>
+<body>
+<main>
+  <div class="crumb">support desk · kb</div>
+  <h1>#4471 · parser fixed, hint retired</h1>
+  <p class="meta"><span>owner <b>support desk</b></span><span class="status">known</span><span>reviewed 2026-10-28 · 0 days ago</span></p>
+  <p>By 4 October, the desk had merged <strong>412 unique reports</strong> about dates into #4471. The export contains overlapping pages, so it has 427 rows; deduplicating by report ID leaves 412 reports. Two distinct causes appear in those reports. The tenant's locale, booking form, and channel, not the intake browser guess or subject line, determine the cause.</p>
+  <h2>Problems in the merged ticket</h2>
+  <ol>
+    <li><strong>Day-first dates parsed month-first — 379 reports.</strong> The shared parser can swap the day and month for day-first tenants. This affects app, email, and some form reports. Engineering marked it fixed on 5 October (<code>fix(dates): parse dd/mm for eu locales</code>). The five reports noted as one-day moves are included in this count; they are not a separate cause.</li>
+    <li><strong>Booking-v3 form hint — 33 reports.</strong> On day-first tenants still using booking-v3, the form presents month-first dates and interprets them differently from the tenant's locale. Engineering marked this won't fix because booking-v3 was retired.</li>
+  </ol>
+  <p>These are separate causes and have separate tickets: <a href="https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues/1">#1, parser (379 reports)</a> and <a href="https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues/2">#2, booking-v3 hint (33 reports)</a>. Both tickets are closed to match the engineering update. <a href="https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues/3">Issue #3</a> was closed as a duplicate of #1 because its five one-day-shift reports are footnoted under the parser cause in the export and already included in the 379-report total.</p>
+  <aside class="callout">Known. The parser fix is released; the booking-v3 form is retired. Keep the two causes and their report counts separate when referring to the historical merge.</aside>
+  <h2>What was merged</h2>
+  <p><strong>412</strong> reports merged into #4471 · <strong>2</strong> causes</p>
+  <table><thead><tr><th>cause</th><th>reports</th><th>tagged as</th><th>tenants</th><th>seen</th><th></th></tr></thead>
+  <tbody><tr><td><code>parser</code></td><td>379</td><td class="muted">parser ×356 · hint ×23</td><td>11</td><td>2026-04-01 → 2026-10-04</td><td>#4471 · fixed</td></tr>
+  <tr class="warn"><td><code>hint</code></td><td>33</td><td class="muted">hint ×18 · parser ×15</td><td>3</td><td>2026-04-17 → 2026-09-22</td><td>#2 · not planned</td></tr></tbody></table>
+  <p class="muted">5 reports read as a one-day move; filed under <code>parser</code> by tenant.</p>
+  <p>The table's five-report note is a subset of the parser row, not another cause to add to the total. The two issue counts sum to all 412 unique reports.</p>
+  <h2>Since April</h2>
+  <figure id="queue"><p>Loading report timeline…</p></figure>
+  <h2>Lessons</h2>
+  <ul><li>Deduplicate export rows by report ID before counting; repeated rows are not new reports.</li><li>Group by tenant locale and form behaviour before opening tickets. Intake tags and matching subjects do not establish that reports share a cause.</li><li>A merged ticket can hide multiple causes. Preserve one report count per distinct problem, even after engineering posts an update. Do not count the five one-day-shift notes twice.</li></ul>
+  <p class="stamp">desk ref <b>DR-EPDZ-DHB9</b></p>
+  <footer>Pages are written by people. Tables and charts are built from data at render time.</footer>
+</main>
+</body>
+</html>
