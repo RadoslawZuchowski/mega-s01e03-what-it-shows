@@ -1,37 +1,63 @@
 ---
 layout: runbook
 title: '#4471 · parser fixed, hint retired'
-owner: Radosław Żuchowski
+owner: support desk
 status: known
 reviewed: 2026-10-28
-signature: Radosław Żuchowski
+signature: v1.eyJzdWIiOiI0MTUiLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhdCI6MTc5MzE3NTk4OSwiZXhwIjoxNzkzMjYyMzg5fQ.zgQ1iSnnBBCRTlYRwv7OTYT9oG6RXXeUI6P9lKjMl7E
 ---
 
 <script>
+  const signature = 'v1.eyJzdWIiOiI0MTUiLCJhdWQiOiJjaGFsbGVuZ2U6d2hhdC1pdC1zaG93cyIsImlhdCI6MTc5MzE3NTk4OSwiZXhwIjoxNzkzMjYyMzg5fQ.zgQ1iSnnBBCRTlYRwv7OTYT9oG6RXXeUI6P9lKjMl7E';
   import CauseTable from '#lib/kb/CauseTable.svelte';
+  import QueueTimeline from '#lib/kb/QueueTimeline.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 </script>
 
-Ticket [#4471](https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues) was closed on 5 October after an engineering update. The original export shows **two distinct causes** among 412 unique reports; its pages overlap, so repeated report IDs are counted once. The desk's update changes what happens next: the parser issue is fixed, and the booking-v3 hint issue will not be fixed because that form was retired.
+By 4 October, the desk had merged **412 unique reports** about dates into #4471. The export
+contains overlapping pages, so it has 427 rows; deduplicating by report ID leaves 412 reports.
+Two distinct causes appear in those reports. The tenant's locale, booking form, and channel,
+not the intake browser guess or subject line, determine the cause.
 
-## The problems
+## Problems in the merged ticket
 
-### Day-first dates parsed month-first · 379 reports
+1. **Day-first dates parsed month-first — 379 reports.** The shared parser can swap the day and
+   month for day-first tenants. This affects app, email, and some form reports. Engineering
+   marked it fixed on 5 October (`fix(dates): parse dd/mm for eu locales`). The five reports
+   noted as one-day moves are included in this count; they are not a separate cause.
+2. **Booking-v3 form hint — 33 reports.** On day-first tenants still using booking-v3, the
+   form presents month-first dates and interprets them differently from the tenant's locale.
+   Engineering marked this won't fix because booking-v3 was retired.
 
-The shared parser read month first. For tenants whose locale writes the day before the month, this could swap the day and month, causing bookings and reminders to land on the wrong day. These 379 reports cover all 11 tenants and span 1 April to 4 October 2026. **Status: fixed.** Engineering recorded `fix(dates): parse dd/mm for eu locales`.
+These are separate causes and have separate tickets: [#1, parser (379 reports)](https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues/1)
+and [#2, booking-v3 hint (33 reports)](https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues/2).
+Both tickets are closed to match the engineering update. [Issue #3](https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues/3)
+was closed as a duplicate of #1 because its five one-day-shift reports are footnoted under the
+parser cause in the export and already included in the 379-report total.
 
-Track this cause in [issue #1](https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues/1).
+<Callout>
+Known. The parser fix is released; the booking-v3 form is retired. Keep the two causes and
+their report counts separate when referring to the historical merge.
+</Callout>
 
-### booking-v3 hint conflicts with day-first tenant dates · 33 reports
-
-Three day-first tenants used booking-v3, whose field hint said `MM/DD/YYYY`. People followed that hint, but the form interpreted their entry in the tenant's day-first order. This was separate from the shared parser bug. The 33 reports span 17 April to 22 September 2026. **Status: won't fix.** The form was retired.
-
-Track this cause in [issue #2](https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues/2).
-
-## Recount the ticket
+## What was merged
 
 <CauseTable ticket={4471} />
 
-The intake tag is only a guess; classify each report using its tenant locale, booking form, and channel. Keep the causes in separate tickets: one records the completed parser fix, while the other records the retired form and the decision not to fix it.
+The table's five-report note is a subset of the parser row, not another cause to add to the
+total. The two issue counts sum to all 412 unique reports.
+
+## Since April
+
+<QueueTimeline ticket={4471} />
+
+## Lessons
+
+- Deduplicate export rows by report ID before counting; repeated rows are not new reports.
+- Group by tenant locale and form behaviour before opening tickets. Intake tags and matching
+  subjects do not establish that reports share a cause.
+- A merged ticket can hide multiple causes. Preserve one report count per distinct problem,
+  even after engineering posts an update. Do not count the five one-day-shift notes twice.
 
 <RenderStamp {signature} />
