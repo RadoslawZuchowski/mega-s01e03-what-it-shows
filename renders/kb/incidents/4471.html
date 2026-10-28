@@ -57,11 +57,11 @@
   <p class="muted">5 reports read as a one-day move; filed under <code>parser</code> by tenant.</p>
   <p>The table's five-report note is a subset of the parser row, not another cause to add to the total. The two issue counts sum to all 412 unique reports.</p>
   <h2>Since April</h2>
-  <figure id="queue"><p>Loading report timeline…</p></figure>
+  <figure><svg viewBox="0 0 576 140" role="img" aria-label="reports received and merged into #4471, per week"><rect class="received" x="2" y="25" width="9" height="85"/><rect class="merged" x="12" y="60" width="9" height="50"/><text x="12" y="128">03-30</text><text x="108" y="128">04-27</text><text x="204" y="128">05-25</text><text x="300" y="128">06-22</text><text x="396" y="128">07-20</text><text x="492" y="128">08-17</text></svg><figcaption><span class="key received"></span> received · <span class="key merged"></span> merged into #4471 · per week</figcaption></figure>
   <h2>Lessons</h2>
   <ul><li>Deduplicate export rows by report ID before counting; repeated rows are not new reports.</li><li>Group by tenant locale and form behaviour before opening tickets. Intake tags and matching subjects do not establish that reports share a cause.</li><li>A merged ticket can hide multiple causes. Preserve one report count per distinct problem, even after engineering posts an update. Do not count the five one-day-shift notes twice.</li></ul>
   <p class="stamp">desk ref <b>DR-EPDZ-DHB9</b></p>
   <footer>Pages are written by people. Tables and charts are built from data at render time.</footer>
 </main>
-</body>
+<body>
 </html>
