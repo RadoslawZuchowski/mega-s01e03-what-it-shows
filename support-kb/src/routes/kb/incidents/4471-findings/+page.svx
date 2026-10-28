@@ -1,6 +1,6 @@
 ---
 layout: runbook
-title: '#4471 · two date problems, not one'
+title: '#4471 · parser fixed, hint retired'
 owner: Radosław Żuchowski
 status: known
 reviewed: 2026-10-28
@@ -12,19 +12,19 @@ signature: Radosław Żuchowski
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
 </script>
 
-Ticket [#4471](https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues) was marked known as one parser problem. The exported reports show **two distinct causes** among 412 unique reports. The archive has overlapping pages, so repeated report IDs are counted once.
+Ticket [#4471](https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues) was closed on 5 October after an engineering update. The original export shows **two distinct causes** among 412 unique reports; its pages overlap, so repeated report IDs are counted once. The desk's update changes what happens next: the parser issue is fixed, and the booking-v3 hint issue will not be fixed because that form was retired.
 
 ## The problems
 
 ### Day-first dates parsed month-first · 379 reports
 
-The shared parser reads month first. For tenants whose locale writes the day before the month, this can swap the day and month, causing bookings and reminders to land on the wrong day. These 379 reports cover all 11 tenants and span 1 April to 4 October 2026.
+The shared parser read month first. For tenants whose locale writes the day before the month, this could swap the day and month, causing bookings and reminders to land on the wrong day. These 379 reports cover all 11 tenants and span 1 April to 4 October 2026. **Status: fixed.** Engineering recorded `fix(dates): parse dd/mm for eu locales`.
 
 Track this cause in [issue #1](https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues/1).
 
 ### booking-v3 hint conflicts with day-first tenant dates · 33 reports
 
-Three day-first tenants use booking-v3, whose field hint says `MM/DD/YYYY`. People follow that hint, but the form interprets their entry in the tenant's day-first order. This is a separate form-hint problem, not the shared parser bug. The 33 reports span 17 April to 22 September 2026.
+Three day-first tenants used booking-v3, whose field hint said `MM/DD/YYYY`. People followed that hint, but the form interpreted their entry in the tenant's day-first order. This was separate from the shared parser bug. The 33 reports span 17 April to 22 September 2026. **Status: won't fix.** The form was retired.
 
 Track this cause in [issue #2](https://github.com/RadoslawZuchowski/mega-s01e03-what-it-shows/issues/2).
 
@@ -32,6 +32,6 @@ Track this cause in [issue #2](https://github.com/RadoslawZuchowski/mega-s01e03-
 
 <CauseTable ticket={4471} />
 
-The intake tag is only a guess; classify each report using its tenant locale, booking form, and channel. Keep the two causes in separate tickets so each fix can be tracked independently.
+The intake tag is only a guess; classify each report using its tenant locale, booking form, and channel. Keep the causes in separate tickets: one records the completed parser fix, while the other records the retired form and the decision not to fix it.
 
 <RenderStamp {signature} />
